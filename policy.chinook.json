@@ -1,0 +1,8 @@
+{
+  "allowed_tables": ["Album", "Artist", "Track", "Genre", "MediaType", "Playlist", "PlaylistTrack", "Invoice", "InvoiceLine", "Customer"],
+  "denied_columns": ["customer.email", "customer.phone", "customer.fax", "customer.address", "customer.postalcode",
+                     "invoice.billingaddress", "invoice.billingpostalcode"],
+  "max_rows": 200,
+  "timeout_ms": 2000,
+  "allow_star": false
+}
