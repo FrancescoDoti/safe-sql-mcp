@@ -20,7 +20,7 @@ All of it is configured in a JSON policy ([`policy.chinook.json`](policy.chinook
 
 ## Red-team results
 
-80 cases against the [Chinook](https://github.com/lerocha/chinook-database) sample database (a music store with customers, invoices and employees). The policy allows 10 tables, hides the `Employee` table entirely, and restricts 7 PII columns (email, phone, fax, addresses, postcodes).
+77 cases against the [Chinook](https://github.com/lerocha/chinook-database) sample database (a music store with customers, invoices and employees). The policy allows 10 tables, hides the `Employee` table entirely, and restricts 7 PII columns (email, phone, fax, addresses, postcodes).
 
 | Category | Example | Cases | As expected |
 |---|---|---|---|
@@ -37,7 +37,7 @@ All of it is configured in a JSON policy ([`policy.chinook.json`](policy.chinook
 
 Run it yourself: `python -m safesql.redteam` (about 2 s). The same cases run in `pytest`, alongside tests for the read-only connection, the audit log and the MCP tool layer.
 
-**How the suite was built, honestly.** I wrote the first 67 cases alongside the guard. Only one didn't behave as I first expected: `LIMIT -1` (SQLite reads it as "no limit"). The guard refuses it, and I kept that stricter behaviour. The 13 evasion cases came afterwards, as attempts to break the finished guard. None got through.
+**How the suite was built, honestly.** I wrote the first 64 cases alongside the guard. Only one didn't behave as I first expected: `LIMIT -1` (SQLite reads it as "no limit"). The guard refuses it, and I kept that stricter behaviour. The 13 evasion cases came afterwards, as attempts to break the finished guard. None got through.
 
 ## Bugs this project caught
 
@@ -73,4 +73,4 @@ Tools exposed: `list_tables`, `describe_table` (restricted columns are marked, s
 - **Column- and table-level policy only, not row-level.** "Analysts may see only EMEA customers" needs row filters, which means rewriting the query with a mandatory `WHERE`. That's the next feature, and the parsed AST makes it possible.
 - **Aggregates can still leak in principle.** The guard blocks any *reference* to a restricted column, but an allowed column with high cardinality, such as a customer's full name plus city, can still identify a person. Policy design matters as much as enforcement.
 - **SQLite only.** The guard is dialect-aware through sqlglot, but read-only enforcement and timeouts on Postgres need a read-only role and `statement_timeout`. Those are configuration, not code here.
-- **The suite is my own.** 80 cases is evidence, not proof. The layered design exists precisely because no parser check is complete.
+- **The suite is my own.** 77 cases is evidence, not proof. The layered design exists precisely because no parser check is complete.
